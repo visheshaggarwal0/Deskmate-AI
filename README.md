@@ -93,4 +93,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Built with ❤️ by [Your Name/Team] using the [RunAnywhere SDK](https://runanywhere.com).
+Built with ❤️ by Vishesh Aggarwal using the [RunAnywhere SDK](https://runanywhere.com).

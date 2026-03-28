@@ -59,8 +59,26 @@ function copyWasmPlugin(): Plugin {
   };
 }
 
+/**
+ * Suppresses common "Sourcemap points to missing source files" warnings
+ * in the console for @runanywhere packages (which are excluded from pre-bundling).
+ */
+function suppressSourcemapErrors(): Plugin {
+  return {
+    name: 'suppress-sourcemap-errors',
+    transform(code, id) {
+      if (id.includes('@runanywhere')) {
+        return {
+          code: code.replace(/\/\/# sourceMappingURL=.*/g, ''),
+          map: null,
+        };
+      }
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), copyWasmPlugin()],
+  plugins: [react(), copyWasmPlugin(), suppressSourcemapErrors()],
   server: {
     headers: {
       // Cross-Origin Isolation — required for SharedArrayBuffer / multi-threaded WASM.

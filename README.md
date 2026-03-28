@@ -1,130 +1,96 @@
-# RunAnywhere Web Starter App
+# DeskMate AI 🤖 🔒
 
-A minimal React + TypeScript starter app demonstrating **on-device AI in the browser** using the [`@runanywhere/web`](https://www.npmjs.com/package/@runanywhere/web) SDK. All inference runs locally via WebAssembly — no server, no API key, 100% private.
+**Blazing Fast, 100% Private, On-Device Multimodal AI.**
 
-## Features
+DeskMate AI (VisionV) is a next-generation desktop assistant that runs entirely in your browser. Powered by the [RunAnywhere SDK](https://github.com/runanywhere/web), it leverages **WebGPU** and **Web Workers** to provide high-performance AI capabilities without ever sending your data to a server.
 
-| Tab | What it does |
-|-----|-------------|
-| **Chat** | Stream text from an on-device LLM (LFM2 350M) |
-| **Vision** | Point your camera and describe what the VLM sees (LFM2-VL 450M) |
-| **Voice** | Speak naturally — VAD detects speech, STT transcribes, LLM responds, TTS speaks back |
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-6.0-646CFF?logo=vite)
+![Privacy](https://img.shields.io/badge/Privacy-100%25%20Local-green?logo=googlechrome)
 
-## Quick Start
+---
 
-```bash
-npm install
-npm run dev
-```
+## ✨ Key Features
 
-Open [http://localhost:5173](http://localhost:5173). Models are downloaded on first use and cached in the browser's Origin Private File System (OPFS).
+- **🏠 100% On-Device**: All models run locally using WASM and WebGPU. Your data never leaves your machine.
+- **👁️ Multimodal Vision (VLM)**: Upload images or use your camera to ask questions about what the AI "sees." (Powered by LFM2-VL).
+- **🎙️ Real-time Voice**: Seamless STT (Speech-to-Text) and TTS (Text-to-Speech) for natural interactions. (Powered by Whisper & Piper).
+- **🧠 Local Memory**: A persistent memory system that stores your notes and "memories" in `localStorage`.
+- **⚡ WebGPU Accelerated**: Uses the full power of your hardware for low-latency, high-throughput inference.
+- **✨ Explain Mode**: Simplified, beginner-friendly explanations of complex assistant responses.
+- **🚀 Unified Interface**: A clean, modern chat experience with integrated vision and voice controls.
 
-## How It Works
+---
 
-```
-@runanywhere/web (npm package)
-  ├── WASM engine (llama.cpp, whisper.cpp, sherpa-onnx)
-  ├── Model management (download, OPFS cache, load/unload)
-  └── TypeScript API (TextGeneration, STT, TTS, VAD, VLM, VoicePipeline)
-```
+## 🛠️ Tech Stack
 
-The app imports everything from `@runanywhere/web`:
+- **Framework**: [React 19](https://react.dev/)
+- **Build Tool**: [Vite 6](https://vitejs.dev/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **AI Engine**: [@runanywhere/web](https://www.npmjs.com/package/@runanywhere/web)
+- **Model Frameworks**: LlamaCPP (WASM) & ONNX Runtime (WASM)
+- **Acceleration**: WebGPU / WebAssembly
 
-```typescript
-import { RunAnywhere, SDKEnvironment } from '@runanywhere/web';
-import { TextGeneration, VLMWorkerBridge } from '@runanywhere/web-llamacpp';
+---
 
-await RunAnywhere.initialize({ environment: SDKEnvironment.Development });
+## 🚀 Getting Started
 
-// Stream LLM text
-const { stream } = await TextGeneration.generateStream('Hello!', { maxTokens: 200 });
-for await (const token of stream) { console.log(token); }
+### Prerequisites
 
-// VLM: describe an image
-const result = await VLMWorkerBridge.shared.process(rgbPixels, width, height, 'Describe this.');
-```
+- A modern browser with **WebGPU** support (Chrome 113+, Edge 113+ recommended).
+- [Node.js](https://nodejs.org/) (v18 or higher)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 
-## Project Structure
+### Installation
 
-```
-src/
-├── main.tsx              # React root
-├── App.tsx               # Tab navigation (Chat | Vision | Voice)
-├── runanywhere.ts        # SDK init + model catalog + VLM worker
-├── workers/
-│   └── vlm-worker.ts     # VLM Web Worker entry (2 lines)
-├── hooks/
-│   └── useModelLoader.ts # Shared model download/load hook
-├── components/
-│   ├── ChatTab.tsx        # LLM streaming chat
-│   ├── VisionTab.tsx      # Camera + VLM inference
-│   ├── VoiceTab.tsx       # Full voice pipeline
-│   └── ModelBanner.tsx    # Download progress UI
-└── styles/
-    └── index.css          # Dark theme CSS
-```
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/your-username/VisionV.git
+    cd VisionV
+    ```
 
-## Adding Your Own Models
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
 
-Edit the `MODELS` array in `src/runanywhere.ts`:
+3.  **Run the development server**:
+    ```bash
+    npm run dev
+    ```
 
-```typescript
-{
-  id: 'my-custom-model',
-  name: 'My Model',
-  repo: 'username/repo-name',           // HuggingFace repo
-  files: ['model.Q4_K_M.gguf'],         // Files to download
-  framework: LLMFramework.LlamaCpp,
-  modality: ModelCategory.Language,      // or Multimodal, SpeechRecognition, etc.
-  memoryRequirement: 500_000_000,        // Bytes
-}
-```
+4.  **Open your browser**:
+    Navigate to `http://localhost:5173`.
 
-Any GGUF model compatible with llama.cpp works for LLM/VLM. STT/TTS/VAD use sherpa-onnx models.
+---
 
-## Deployment
+## 🤖 Models Used
 
-### Vercel
+| Modality | Model | Framework |
+| :--- | :--- | :--- |
+| **Language (LLM)** | Liquid AI LFM2 350M / 1.2B Tool | LlamaCPP |
+| **Vision (VLM)** | Liquid AI LFM2-VL 450M | LlamaCPP |
+| **Speech (STT)** | Whisper Tiny English | ONNX |
+| **Speech (TTS)** | Piper TTS (Lessac) | ONNX |
+| **VAD** | Silero VAD v5 | ONNX |
 
-```bash
-npm run build
-npx vercel --prod
-```
+---
 
-The included `vercel.json` sets the required Cross-Origin-Isolation headers.
+## 🔒 Privacy & Security
 
-### Netlify
+DeskMate AI is built with a **privacy-first** architecture. Unlike traditional AI assistants that rely on cloud APIs (like OpenAI or Anthropic), DeskMate AI:
+- **Never uploads your audio, images, or text.**
+- **Runs entirely offline** once the models are cached in your browser.
+- **Requires no account or API keys.**
 
-Add a `_headers` file:
+---
 
-```
-/*
-  Cross-Origin-Opener-Policy: same-origin
-  Cross-Origin-Embedder-Policy: credentialless
-```
+## 📄 License
 
-### Any static host
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Serve the `dist/` folder with these HTTP headers on all responses:
+---
 
-```
-Cross-Origin-Opener-Policy: same-origin
-Cross-Origin-Embedder-Policy: credentialless
-```
-
-## Browser Requirements
-
-- Chrome 96+ or Edge 96+ (recommended: 120+)
-- WebAssembly (required)
-- SharedArrayBuffer (requires Cross-Origin Isolation headers)
-- OPFS (for persistent model cache)
-
-## Documentation
-
-- [SDK API Reference](https://docs.runanywhere.ai)
-- [npm package](https://www.npmjs.com/package/@runanywhere/web)
-- [GitHub](https://github.com/RunanywhereAI/runanywhere-sdks)
-
-## License
-
-MIT
+Built with ❤️ by [Your Name/Team] using the [RunAnywhere SDK](https://runanywhere.com).
